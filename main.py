@@ -8,7 +8,16 @@ from bs4 import BeautifulSoup as Bs
 import pandas as pd
 
 
-# func load webpage as soup (url)
+def load_webpage(base_url):
+    """Accepts a url from the user. Returns the website as a soup object.
+    Otherwise, an error halts execution."""
+    try:
+        req = requests.get(base_url)
+        return Bs(req.content, 'html.parser')
+    except requests.exceptions.MissingSchema:
+        print("That url doesn't exist!")
+
+# func load webpage (url)
 #   accepts url string, gets request, converts to soup object, else error
 
 # func get reviewer name (yelp soup object)
@@ -28,10 +37,8 @@ import pandas as pd
 
 
 if __name__ == '__main__':
-    pass
-
-    # url = str ( input ( 'please paste the url here' )
-    # yelp soup = load webpage (url)
+    url = str(input('Please paste the url here: '))
+    soup = load_webpage(url)
     # restaurant = get restaurant name (yelp soup)
 
     # all users = get user name (yelp soup)
