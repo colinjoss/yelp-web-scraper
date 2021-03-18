@@ -17,8 +17,13 @@ def load_webpage(base_url):
     except requests.exceptions.MissingSchema:
         print("That url doesn't exist!")
 
-# func load webpage (url)
-#   accepts url string, gets request, converts to soup object, else error
+
+# func get restaurant name (yelp soup object)
+#   accepts yelp soup object and returns the restaurant name as a string
+
+def get_restaurant_name(soup_obj):
+    """Accepts a beautiful soup object and returns the name of the restaurant on Yelp."""
+    return soup_obj.find('h1').get_text()
 
 # func get reviewer name (yelp soup object)
 #   accepts yelp soup object and returns a list of user names
@@ -31,9 +36,6 @@ def load_webpage(base_url):
 
 # func get reviews (yelp soup object)
 #   accepts yelp soup object and returns a list of reviews
-
-# func get restaurant name (yelp soup object)
-#   accepts yelp soup object and returns the restaurant name as a string
 
 
 if __name__ == '__main__':
