@@ -38,8 +38,9 @@ def get_post_date(soup_list):
     return [item.find('span', attrs={'class': 'css-e81eai'}).get_text() for item in soup_list]
 
 
-# # func get star rating (yelp soup object)
-#   accepts yelp soup object and returns a list of int star ratings
+def get_star_rating(soup_list):
+    """Accepts a list of soup 'li' objects and returns a list of review post dates."""
+    return [item.find('div', attrs={'class': re.compile('star')})['aria-label'][0] for item in soup_list]
 
 # func get reviews (yelp soup object)
 #   accepts yelp soup object and returns a list of reviews
