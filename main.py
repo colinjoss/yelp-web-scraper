@@ -39,11 +39,13 @@ def get_post_date(soup_list):
 
 
 def get_star_rating(soup_list):
-    """Accepts a list of soup 'li' objects and returns a list of review post dates."""
+    """Accepts a list of soup 'li' objects and returns a list of review star ratings."""
     return [item.find('div', attrs={'class': re.compile('star')})['aria-label'][0] for item in soup_list]
 
-# func get reviews (yelp soup object)
-#   accepts yelp soup object and returns a list of reviews
+
+def get_review_content(soup_list):
+    """Accepts a list of soup 'li' objects and returns a list of reviews as strings."""
+    return [item.find('p', attrs={'class': re.compile('comment')}).get_text() for item in soup_list]
 
 
 if __name__ == '__main__':
@@ -53,10 +55,11 @@ if __name__ == '__main__':
     ul_list = soup.find_all('ul')
     li_list = ul_list[9].find_all('li')
 
-    # all users = get user name (yelp soup)
-    # all dates = get post date (yelp soup)
-    # all ratings = get star rating (yelp soup)
-    # all reviews = get reviews (yelp soup)
+    all_users = get_user_name(li_list)
+    all_links = get_user_link(li_list)
+    all_dates = get_post_date(li_list)
+    all_ratings = get_star_rating(li_list)
+    all_reviews = get_review_content(li_list)
 
     # n = 20
     # loop
