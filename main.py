@@ -1,6 +1,6 @@
 # Programmer: Colin Joss
 # Last date updated: 3-19-2021
-# Description:
+# Description: Pulls a review data from Yelp and exports it to as csv file.
 
 import requests
 import re
@@ -55,20 +55,23 @@ def get_review_content(soup_list):
 
 
 if __name__ == '__main__':
+    # Pulls the data and saves a beautiful soup object
     url = str(input('Please paste the url here: '))
     soup = load_webpage(url)
     restaurant = get_restaurant_name(soup)
     review_data = soup.find_all('div', re.compile('review'))
 
+    # Gets data from first page of reviews
     all_users = get_user_name(review_data)
     all_links = get_user_link(review_data)
     all_dates = get_post_date(review_data)
     all_ratings = get_star_rating(review_data)
     all_reviews = get_review_content(review_data)
 
+    # Loops through remaining pages until end is reached
     for n in range(1, 10000):
+        print(f'Getting data from page {n}...')
         next_page = url + f'?start={n * 10}'
-        print(next_page)
         soup = load_webpage(next_page)
         review_data = soup.find_all('div', re.compile('review'))
 
@@ -86,6 +89,7 @@ if __name__ == '__main__':
         all_ratings += ratings
         all_reviews += reviews
 
+    # Saves data as dictionary and converts to Pandas dataframe
     restaurant_dict = {
         'user': all_users,
         'user profile': all_links,
@@ -97,7 +101,9 @@ if __name__ == '__main__':
     restaurant_df = pd.DataFrame(restaurant_dict,
                                  columns=['user', 'user profile', 'post date', 'rating', 'review'])
 
+    # Removes duplicate rows from the dataframe
     restaurant_df.drop_duplicates()
 
+    # Exports the data as a csv
     with open(f'{restaurant}.csv', 'a', newline='') as outfile:
         restaurant_df.to_csv(outfile)
