@@ -6,6 +6,7 @@ import requests
 import re
 from bs4 import BeautifulSoup as Bs
 import pandas as pd
+import csv
 
 
 def load_webpage(base_url):
@@ -30,6 +31,7 @@ def get_user_name(soup_list):
 
 def get_user_link(soup_list):
     """Accepts a list of soup 'li' objects and returns a list of user profile links."""
+    base = 'https://www.yelp.com/'
     return [item.find('span', attrs={'class': 'fs-block css-m6anxm'}).find('a')['href'] for item in soup_list]
 
 
@@ -61,25 +63,25 @@ if __name__ == '__main__':
     all_ratings = get_star_rating(li_list)
     all_reviews = get_review_content(li_list)
 
-    # n = 20
-    # loop
-    #   try:
-    #   next page = url + f'?start={n}'
-    #   yelp soup = load webpage (next page)
+    n = 10
+    while True:
+        next_page = url + f'?start={n}'
+        print(next_page)
+        soup = load_webpage(next_page)
+        ul_list = soup.find_all('ul')
+        li_list = ul_list[9].find_all('li')
 
-    #   users = get reviewer name (yelp soup)
-    #   dates = get post date (yelp soup)
-    #   ratings = get star rating (yelp soup)
-    #   reviews = get reviews (yelp soup)
+        users = get_user_name(li_list)
+        links = get_user_link(li_list)
+        dates = get_post_date(li_list)
+        ratings = get_star_rating(li_list)
+        reviews = get_review_content(li_list)
+        if not users or not links or not dates or not ratings or not reviews:
+            break
 
-    #   all users += users
-    #   all dates += dates
-    #   all ratings += ratings
-    #   all reviews += reviews
-
-    #   except error:
-    #   break loop
-
-    # restaurant dict = { populate dictionary with accumulated data }
-    # restaurant df = pandas.DataFrame(restaurant_dict, columns=['user', 'date', 'rating', 'review'])
-    # restaurant df append to csv named 'restaurant name'
+        all_users += users
+        all_links += links
+        all_dates += dates
+        all_ratings += ratings
+        all_reviews += reviews
+        n += 10
