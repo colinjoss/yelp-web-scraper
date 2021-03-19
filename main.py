@@ -31,8 +31,8 @@ def get_user_name(soup_list):
 
 def get_user_link(soup_list):
     """Accepts a list of soup 'li' objects and returns a list of user profile links."""
-    base = 'https://www.yelp.com/'
-    return [item.find('span', attrs={'class': 'fs-block css-m6anxm'}).find('a')['href'] for item in soup_list]
+    base = 'https://www.yelp.com'
+    return [base + item.find('span', attrs={'class': 'fs-block css-m6anxm'}).find('a')['href'] for item in soup_list]
 
 
 def get_post_date(soup_list):
@@ -54,14 +54,13 @@ if __name__ == '__main__':
     url = str(input('Please paste the url here: '))
     soup = load_webpage(url)
     restaurant = get_restaurant_name(soup)
-    ul_list = soup.find_all('ul')
-    li_list = ul_list[9].find_all('li')
+    review_data = soup.find_all('div', re.compile('review'))
 
-    all_users = get_user_name(li_list)
-    all_links = get_user_link(li_list)
-    all_dates = get_post_date(li_list)
-    all_ratings = get_star_rating(li_list)
-    all_reviews = get_review_content(li_list)
+    all_users = get_user_name(review_data)
+    all_links = get_user_link(review_data)
+    all_dates = get_post_date(review_data)
+    all_ratings = get_star_rating(review_data)
+    all_reviews = get_review_content(review_data)
 
     n = 10
     while True:
@@ -86,15 +85,15 @@ if __name__ == '__main__':
         all_reviews += reviews
         n += 10
 
-        restaurant_dict = {
-            'user': all_users,
-            'user profile': all_links,
-            'post date': all_dates,
-            'rating': all_ratings,
-            'review': all_reviews
-        }
+    restaurant_dict = {
+        'user': all_users,
+        'user profile': all_links,
+        'post date': all_dates,
+        'rating': all_ratings,
+        'review': all_reviews
+    }
 
-        restaurant_df = pd.DataFrame(restaurant_dict,
-                                     columns=['user', 'user profile', 'post date', 'rating', 'review'])
-        with open(f'{restaurant}.csv', 'a') as outfile:
-            restaurant_df.to_csv(outfile)
+    restaurant_df = pd.DataFrame(restaurant_dict,
+                                 columns=['user', 'user profile', 'post date', 'rating', 'review'])
+    with open(f'{restaurant}.csv', 'a', newline='') as outfile:
+        restaurant_df.to_csv(outfile)
