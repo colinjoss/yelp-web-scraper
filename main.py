@@ -18,20 +18,22 @@ def load_webpage(base_url):
         print("That url doesn't exist!")
 
 
-# func get restaurant name (yelp soup object)
-#   accepts yelp soup object and returns the restaurant name as a string
-
-def get_restaurant_name(soup_obj):
+def get_restaurant_name(soup):
     """Accepts a beautiful soup object and returns the name of the restaurant on Yelp."""
-    return soup_obj.find('h1').get_text()
+    return soup.find('h1').get_text()
 
-# func get reviewer name (yelp soup object)
-#   accepts yelp soup object and returns a list of user names
+
+def get_user_name(soup_list):
+    """Accepts a list of soup 'li' objects and returns a list of user names."""
+    return [item.find('span', attrs={'class': 'fs-block css-m6anxm'}).get_text() for item in soup_list]
+
+
+
 
 # func get review date (yelp soup object)
-#   accepts yelp soup object and returns a list of dates
-
-# func get star rating (yelp soup object)
+# #   accepts yelp soup object and returns a list of dates
+#
+# # func get star rating (yelp soup object)
 #   accepts yelp soup object and returns a list of int star ratings
 
 # func get reviews (yelp soup object)
@@ -41,7 +43,9 @@ def get_restaurant_name(soup_obj):
 if __name__ == '__main__':
     url = str(input('Please paste the url here: '))
     soup = load_webpage(url)
-    # restaurant = get restaurant name (yelp soup)
+    restaurant = get_restaurant_name(soup)
+    ul_list = soup.find_all('ul')
+    li_list = ul_list[9].find_all('li')
 
     # all users = get user name (yelp soup)
     # all dates = get post date (yelp soup)
