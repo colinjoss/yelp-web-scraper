@@ -1,12 +1,11 @@
 # Programmer: Colin Joss
-# Last date updated: 3-18-2021
+# Last date updated: 3-19-2021
 # Description:
 
 import requests
 import re
 from bs4 import BeautifulSoup as Bs
 import pandas as pd
-import csv
 
 
 def load_webpage(base_url):
@@ -20,7 +19,7 @@ def load_webpage(base_url):
         req = requests.get(base_url)
         return Bs(req.content, 'html.parser')
     except requests.exceptions.MissingSchema:
-        print("That yelp url doesn't exist!")
+        print("That Yelp url doesn't exist!")
         return False
 
 
@@ -97,5 +96,8 @@ if __name__ == '__main__':
 
     restaurant_df = pd.DataFrame(restaurant_dict,
                                  columns=['user', 'user profile', 'post date', 'rating', 'review'])
+
+    restaurant_df.drop_duplicates()
+
     with open(f'{restaurant}.csv', 'a', newline='') as outfile:
         restaurant_df.to_csv(outfile)
