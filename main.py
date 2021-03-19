@@ -85,3 +85,16 @@ if __name__ == '__main__':
         all_ratings += ratings
         all_reviews += reviews
         n += 10
+
+        restaurant_dict = {
+            'user': all_users,
+            'user profile': all_links,
+            'post date': all_dates,
+            'rating': all_ratings,
+            'review': all_reviews
+        }
+
+        restaurant_df = pd.DataFrame(restaurant_dict,
+                                     columns=['user', 'user profile', 'post date', 'rating', 'review'])
+        with open(f'{restaurant}.csv', 'a') as outfile:
+            restaurant_df.to_csv(outfile)
