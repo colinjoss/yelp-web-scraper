@@ -32,8 +32,11 @@ def get_user_link(soup_list):
     """Accepts a list of soup 'li' objects and returns a list of user profile links."""
     return [item.find('span', attrs={'class': 'fs-block css-m6anxm'}).find('a')['href'] for item in soup_list]
 
-# func get review date (yelp soup object)
-# #   accepts yelp soup object and returns a list of dates
+
+def get_post_date(soup_list):
+    """Accepts a list of soup 'li' objects and returns a list of review post dates."""
+    return [item.find('span', attrs={'class': 'css-e81eai'}).get_text() for item in soup_list]
+
 
 # # func get star rating (yelp soup object)
 #   accepts yelp soup object and returns a list of int star ratings
