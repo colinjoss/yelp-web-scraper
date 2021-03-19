@@ -12,11 +12,16 @@ import csv
 def load_webpage(base_url):
     """Accepts a url from the user. Returns the website as a soup object.
     Otherwise, an error halts execution."""
+    if 'https://www.yelp.com/' not in base_url:
+        print('This program only works for Yelp reviews!')
+        return False
+
     try:
         req = requests.get(base_url)
         return Bs(req.content, 'html.parser')
     except requests.exceptions.MissingSchema:
-        print("That url doesn't exist!")
+        print("That yelp url doesn't exist!")
+        return False
 
 
 def get_restaurant_name(soup):
@@ -62,19 +67,17 @@ if __name__ == '__main__':
     all_ratings = get_star_rating(review_data)
     all_reviews = get_review_content(review_data)
 
-    n = 10
-    while True:
-        next_page = url + f'?start={n}'
+    for n in range(1, 10000):
+        next_page = url + f'?start={n * 10}'
         print(next_page)
         soup = load_webpage(next_page)
-        ul_list = soup.find_all('ul')
-        li_list = ul_list[9].find_all('li')
+        review_data = soup.find_all('div', re.compile('review'))
 
-        users = get_user_name(li_list)
-        links = get_user_link(li_list)
-        dates = get_post_date(li_list)
-        ratings = get_star_rating(li_list)
-        reviews = get_review_content(li_list)
+        users = get_user_name(review_data)
+        links = get_user_link(review_data)
+        dates = get_post_date(review_data)
+        ratings = get_star_rating(review_data)
+        reviews = get_review_content(review_data)
         if not users or not links or not dates or not ratings or not reviews:
             break
 
@@ -83,7 +86,6 @@ if __name__ == '__main__':
         all_dates += dates
         all_ratings += ratings
         all_reviews += reviews
-        n += 10
 
     restaurant_dict = {
         'user': all_users,
