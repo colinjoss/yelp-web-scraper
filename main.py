@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     # Loops through remaining pages until end is reached
     for n in range(1, 10000):
-        print(f'Getting data from page {n}...')
+        print(f'Retrieving data from page {n}...')
         next_page = url + f'?start={n * 10}'
         soup = load_webpage(next_page)
         review_data = soup.find_all('div', re.compile('review'))
@@ -105,5 +105,4 @@ if __name__ == '__main__':
     restaurant_df.drop_duplicates()
 
     # Exports the data as a csv
-    with open(f'{restaurant}.csv', 'a', newline='') as outfile:
-        restaurant_df.to_csv(outfile)
+    restaurant_df.to_csv(f'{restaurant}.csv')
