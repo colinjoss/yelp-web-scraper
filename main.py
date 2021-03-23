@@ -28,6 +28,11 @@ def get_restaurant_name(soup):
     return soup.find('h1').get_text()
 
 
+def get_number_of_pages(soup):
+    """Accepts a beautiful soup object and returns the number of review pages for the linked restaurant."""
+    return soup.body.find('span', text=re.compile('1 of')).text[5:]
+
+
 def get_user_name(soup_list):
     """Accepts a list of soup 'li' objects and returns a list of user names."""
     return [item.find('span', attrs={'class': 'fs-block css-m6anxm'}).get_text() for item in soup_list]
@@ -59,6 +64,7 @@ if __name__ == '__main__':
     url = str(input('Please paste the url here: '))
     soup = load_webpage(url)
     restaurant = get_restaurant_name(soup)
+    t = get_number_of_pages(soup)
     review_data = soup.find_all('div', re.compile('review'))
 
     # Gets data from first page of reviews
@@ -69,8 +75,9 @@ if __name__ == '__main__':
     all_reviews = get_review_content(review_data)
 
     # Loops through remaining pages until end is reached
-    for n in range(1, 10000):
-        print(f'Retrieving data from page {n}...')
+
+    for n in range(1, int(t)):
+        print(f'Retrieving data from page {n} of {t}...')
         next_page = url + f'?start={n * 10}'
         soup = load_webpage(next_page)
         review_data = soup.find_all('div', re.compile('review'))
