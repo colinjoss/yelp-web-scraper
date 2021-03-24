@@ -13,6 +13,8 @@ Project made with:
 - re (RegEx)
 - bs4 0.0.1
 - pandas 1.2.2
+- time
+- random
 
 ## Installation
 
