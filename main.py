@@ -6,7 +6,8 @@ import requests
 import re
 from bs4 import BeautifulSoup as Bs
 import pandas as pd
-
+import time
+import random
 
 
 def load_webpage(base_url):
@@ -79,6 +80,7 @@ if __name__ == '__main__':
     # Loops through remaining pages until end is reached
     for n in range(2, t+1):
         print(f'Retrieving data from page {n} of {t}...')
+        time.sleep(random.randrange(2, 12))
         next_page = url + f'?start={n * 10}'
         soup = load_webpage(next_page)
         review_data = soup.find_all('div', re.compile('review'))
