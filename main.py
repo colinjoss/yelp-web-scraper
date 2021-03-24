@@ -25,9 +25,9 @@ def load_webpage(base_url):
         return False
 
 
-def get_restaurant_name(soup):
-    """Accepts a beautiful soup object and returns the name of the restaurant on Yelp."""
-    return soup.find('h1').get_text()
+def get_business_name(url):
+    """Accepts url string and returns a portion of the url as an id."""
+    return url[25:]
 
 
 def get_number_of_pages(soup):
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     # Pulls the data and saves a beautiful soup object
     url = str(input('Please paste the url here: '))
     soup = load_webpage(url)
-    restaurant = get_restaurant_name(soup)
+    id = get_business_name(url)
     t = get_number_of_pages(soup)
     review_data = soup.find_all('div', re.compile('review'))
 
@@ -119,4 +119,4 @@ if __name__ == '__main__':
         raise Exception('Not all of the information was retrieved. Please try again.')
 
     # Exports the data as a csv
-    review_df.to_csv(f'{restaurant}.csv')
+    review_df.to_csv(f'{id}.csv')
