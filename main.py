@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup as Bs
 import pandas as pd
 
 
+
 def load_webpage(base_url):
     """Accepts a url from the user. Returns the website as a soup object.
     Otherwise, an error halts execution."""
@@ -30,7 +31,7 @@ def get_restaurant_name(soup):
 
 def get_number_of_pages(soup):
     """Accepts a beautiful soup object and returns the number of review pages for the linked restaurant."""
-    return soup.body.find('span', text=re.compile('1 of')).text[5:]
+    return int(soup.body.find('span', text=re.compile('1 of')).text[5:])
 
 
 def get_user_name(soup_list):
@@ -68,6 +69,7 @@ if __name__ == '__main__':
     review_data = soup.find_all('div', re.compile('review'))
 
     # Gets data from first page of reviews
+    print(f'Retrieving data from page 1 of {t}...')
     all_users = get_user_name(review_data)
     all_links = get_user_link(review_data)
     all_dates = get_post_date(review_data)
@@ -75,8 +77,7 @@ if __name__ == '__main__':
     all_reviews = get_review_content(review_data)
 
     # Loops through remaining pages until end is reached
-
-    for n in range(1, int(t)):
+    for n in range(2, t+1):
         print(f'Retrieving data from page {n} of {t}...')
         next_page = url + f'?start={n * 10}'
         soup = load_webpage(next_page)
@@ -97,7 +98,7 @@ if __name__ == '__main__':
         all_reviews += reviews
 
     # Saves data as dictionary and converts to Pandas dataframe
-    restaurant_dict = {
+    review_dict = {
         'user': all_users,
         'user profile': all_links,
         'post date': all_dates,
@@ -105,11 +106,15 @@ if __name__ == '__main__':
         'review': all_reviews
     }
 
-    restaurant_df = pd.DataFrame(restaurant_dict,
-                                 columns=['user', 'user profile', 'post date', 'rating', 'review'])
+    review_df = pd.DataFrame(review_dict,
+                             columns=['user', 'user profile', 'post date', 'rating', 'review'])
 
     # Removes duplicate rows from the dataframe
-    restaurant_df.drop_duplicates()
+    review_df.drop_duplicates()
+
+    # Halts execution if the projected number of reviews doesn't match the number of rows in the df
+    if len(review_df.index) < (t - 2) * 10:
+        raise Exception('Not all of the information was retrieved. Please try again.')
 
     # Exports the data as a csv
-    restaurant_df.to_csv(f'{restaurant}.csv')
+    review_df.to_csv(f'{restaurant}.csv')
