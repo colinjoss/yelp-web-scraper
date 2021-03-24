@@ -25,7 +25,7 @@ def load_webpage(base_url):
         return False
 
 
-def get_business_name(url):
+def get_id(url):
     """Accepts url string and returns a portion of the url as an id."""
     return url[25:]
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     # Pulls the data and saves a beautiful soup object
     url = str(input('Please paste the url here: '))
     soup = load_webpage(url)
-    id = get_business_name(url)
+    id = get_id(url)
     t = get_number_of_pages(soup)
     review_data = soup.find_all('div', re.compile('review'))
 
@@ -90,8 +90,6 @@ if __name__ == '__main__':
         dates = get_post_date(review_data)
         ratings = get_star_rating(review_data)
         reviews = get_review_content(review_data)
-        if not users or not links or not dates or not ratings or not reviews:
-            break
 
         all_users += users
         all_links += links
